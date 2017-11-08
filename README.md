@@ -13,6 +13,7 @@ Hello World演员使用三种不同的讯息：
 让我们看看Actor如何实现Greeter并Printer演示这些最佳实践。
 更好的演员
 下面的代码片段Greeter.java实现了GreeterActor：
+
 package com.lightbend.akka.sample;
 
 import akka.actor.AbstractActor;
@@ -59,6 +60,7 @@ public class Greeter extends AbstractActor {
         .build();
   }
 }
+
 让我们分解一下功能：
   ● 的Greeter类扩展akka.actor.AbstractActor类并实现createReceive方法。
   ● 所述Greeter构造函数接受两个参数：String message，这将构建问候消息时和使用ActorRef printerActor，这对演员处理问候的输出的参考。
@@ -69,6 +71,7 @@ public class Greeter extends AbstractActor {
 该Printer实现非常简单：
   ● 它通过创建一个记录器Logging.getLogger(getContext().getSystem(), this);。通过这样做，我们可以log.info()在Actor中写入，而不需要任何额外的布线。
   ● 它只处理一种类型的消息Greeting，并记录该消息的内容。
+  
 package com.lightbend.akka.sample;
 
 import akka.actor.AbstractActor;
@@ -105,6 +108,7 @@ public class Printer extends AbstractActor {
   }
 }
 
+
 创建演员
 到目前为止，我们已经看过演员及其讯息的定义。现在让我们深入一下位置透明的力量，看看如何创建Actor实例。
 位置透明的力量
@@ -114,6 +118,7 @@ public class Printer extends AbstractActor {
 这个akka.actor.ActorSystem工厂在某种程度上和Spring相似BeanFactory。它作为演员的容器并管理他们的生命周期。该actorOf工厂方法创建演员和采用两个参数，称为配置对象Props和一个名称。
 演员和ActorSystem名字在阿卡重要。例如，您使用它们进行查找。使用与您的域模型一致的有意义的名称可以更容易地推断出他们的道路。
 上一个主题回顾了Hello World Actor的定义。让我们看看AkkaQuickstart.java创建的文件Greeter和PrinterActor实例中的代码：
+
 final ActorRef printerActor = 
   system.actorOf(Printer.props(), "printerActor");
 final ActorRef howdyGreeter = 
@@ -122,6 +127,7 @@ final ActorRef helloGreeter =
   system.actorOf(Greeter.props("Hello", printerActor), "helloGreeter");
 final ActorRef goodDayGreeter = 
   system.actorOf(Greeter.props("Good day", printerActor), "goodDayGreeter");
+  
 注意以下几点：
   ● 创建Actor 的actorOf方法。正如我们在上一个主题中讨论的那样，它使用类的静态方法来获取值。提供对新创建的Actor实例的引用。ActorSystemPrinterpropsPrinterPropsActorRefPrinter
   ● 因为Greeter代码创建了三个Actor实例，每个实例都有一个特定的问候消息。
@@ -134,6 +140,7 @@ final ActorRef goodDayGreeter =
 你可能想知道当Actor没有处理消息的时候正在做什么，即做实际的工作？它处于暂停状态，除了内存之外，它不消耗任何资源。再一次显示演员的轻量级，高效性。
 发送消息给一个Actor
 为了把消息到演员的邮箱，使用tell的方法ActorRef。例如，Hello World的主要类将消息发送给GreeterActor，如下所示：
+
 howdyGreeter.tell(new WhoToGreet("Akka"), ActorRef.noSender());
 howdyGreeter.tell(new Greet(), ActorRef.noSender());
 
@@ -145,13 +152,17 @@ helloGreeter.tell(new Greet(), ActorRef.noSender());
 
 goodDayGreeter.tell(new WhoToGreet("Play"), ActorRef.noSender());
 goodDayGreeter.tell(new Greet(), ActorRef.noSender());
+
 该Greeter演员也将消息发送给Printer演员：
+
 printerActor.tell(new Greeting(greeting), getSelf());
+
 我们已经看过如何创建演员和发送消息。现在，我们Main来看整个课程。
 
 
 主类
 MainHello World中的类创建并控制actor。注意使用ActorSystem一个容器和actorOf创建Actor 的方法。最后，这个类创建发送给Actor的消息。
+
 package com.lightbend.akka.sample;
 
 import akka.actor.ActorRef;
@@ -193,6 +204,7 @@ public class AkkaQuickstart {
     }
   }
 }
+
 同样，我们再来看一下定义Actor和他们接受的消息的完整源代码。
 
 
@@ -330,6 +342,7 @@ public class AkkaQuickstart {
 Hello World示例中的测试说明了如何使用JUnit框架。测试覆盖不完整。它只是显示测试actor代码是多么容易，并提供了一些基本的概念。你可以添加它作为一个练习来增加自己的知识。
 测试类正在使用akka.test.javadsl.TestKit，这是一个演员和演员系统集成测试的模块。这个类只使用TestKit提供的一小部分功能。
 集成测试可以帮助我们确保演员的行为是异步的。这第一个测试使用TestKit探针来询问和验证预期的行为。我们来看一个源代码片段：
+
 package com.lightbend.akka.sample;
 
 import akka.actor.ActorRef;
@@ -368,6 +381,7 @@ public class AkkaQuickstartTest {
         assertEquals("Hello, Akka", greeting.message);
     }
 }
+
 一旦我们有一个引用TestKit探测，我们将ActorRef其Greeter作为构造函数参数的一部分传递给它。之后，我们发送了两封邮件Greeter; 一个设置问候者迎接，另一个触发发送Greeting。在expectMsg对方法TestKit的消息是否得到了发送验证。
 示例代码只是划伤了可用功能的表面TestKit。一个完整的概述可以在这里找到。
 现在我们已经审查了所有的代码。让我们再次运行该示例并查看其输出。
@@ -377,6 +391,7 @@ public class AkkaQuickstartTest {
 构建文件
 如下所示，此示例项目中使用的Maven（pom.xml）和Gradle（build.gradle）的构建文件非常简单。有关更多信息，请参阅您选择的构建工具的文档。
 Maven的
+
 <project>
     <modelVersion>4.0.0</modelVersion>
 
@@ -428,15 +443,18 @@ Maven的
         </plugins>
     </build>
 </project>
-摇篮
+
+
 运行该项目
 就像您之前所做的那样，从控制台运行应用程序：
-Maven的
+
+Maven
 $ mvn compile exec:exec
 
 摇篮
 输出应该的东西像这样（所有的方式滚动看到演员输出正确的）：
-Maven的
+
+Maven
 [INFO] Scanning for projects...
 [INFO]
 [INFO] ------------------------------------------------------------------------
@@ -450,14 +468,17 @@ Maven的
 [INFO] [05/11/2017 14:07:20.791] [helloakka-akka.actor.default-dispatcher-2] [akka://helloakka/user/printerActor] Howdy, Akka
 [INFO] [05/11/2017 14:07:20.791] [helloakka-akka.actor.default-dispatcher-2] [akka://helloakka/user/printerActor] Howdy, Lightbend
 
-摇篮
+
+
 请记住，我们设置我们的Printer演员使用阿卡的记录器？这就是为什么我们记录事情时有很多额外的信息。日志输出包含诸如何时和从哪个参与者记录的信息。让我们专注于Printer演员的输出一段时间：
+
 ... Howdy, Akka
 ... Hello, Java
 ... Good day, Play
 ... Howdy, Lightbend
 
 这是我们将代码发送给GreeterActor的结果：
+
 howdyGreeter.tell(new WhoToGreet("Akka"), ActorRef.noSender());
 howdyGreeter.tell(new Greet(), ActorRef.noSender());
 
@@ -469,11 +490,12 @@ helloGreeter.tell(new Greet(), ActorRef.noSender());
 
 goodDayGreeter.tell(new WhoToGreet("Play"), ActorRef.noSender());
 goodDayGreeter.tell(new Greet(), ActorRef.noSender());
+
 要运行测试，请输入test任务：
-Maven的
+Maven
 $ mvn test
 
-摇篮
+
 尝试运行代码几次，并确保注意到日志的顺序。你有没有注意到它可以从一个跑到另一个跑？这里发生了什么？异步行为变得明显。这可能是一个新的心理模型给你。但是，一旦你获得了经验，一切都将变得清晰。就像Matrix的Neo一样。
 下一步
 如果您使用IntelliJ，请尝试将示例项目与IntelliJ IDEA集成。
