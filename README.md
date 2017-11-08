@@ -219,7 +219,7 @@ public class AkkaQuickstart {
 同样，我们再来看一下定义Actor和他们接受的消息的完整源代码。
 
 
-完整的示例代码
+## 完整的示例代码
 下面是三个类的完整源代码Greeter，Printer并AkkaQuickstart创建示例应用程序：
 
 Greeter.java
@@ -357,7 +357,7 @@ public class AkkaQuickstart {
 作为另一个最佳实践，我们应该提供一些测试覆盖
 
 
-测试演员
+## 测试演员
 
 Hello World示例中的测试说明了如何使用JUnit框架。测试覆盖不完整。它只是显示测试actor代码是多么容易，并提供了一些基本的概念。你可以添加它作为一个练习来增加自己的知识。
 测试类正在使用akka.test.javadsl.TestKit，这是一个演员和演员系统集成测试的模块。这个类只使用TestKit提供的一小部分功能。
